@@ -1,0 +1,11 @@
+**/__pycache__/
+output/
+.texpadtmp/
+*.lock
+.DS_Store
+.idea
+*.aux
+*.log
+*.out
+*Notes.bib
+*synctex.gz

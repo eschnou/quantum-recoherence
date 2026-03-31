@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "recohere"
+version = "0.1.0"
+description = "Born-rule filtering from finite Hilbert space geometry"
+authors = ["eschenal"]
+readme = "README.md"
+packages = [{include = "recohere", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+numpy = "^2.0"
+matplotlib = "^3.9"
+cirq-core = "^1.6.1"
+scipy = "^1.17"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
