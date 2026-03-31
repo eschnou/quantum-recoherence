@@ -24,8 +24,8 @@ p₁ ≈ 0.746), computed analytically in the frequency-class decomposition — 
 The evolution is L layers of exact matrix exponentiation of the transverse-field Ising Hamiltonian
 (H = J/2·ZZ + hx·X, integrable near-critical regime; J/2 = 0.5, hx = 0.9045, hz = 0.0).
 
-- **Frequency-class result**: 5.4× gap between ε_born and ε_comb at L=15, robust over 10 seeds
-- **Branch-level result**: At L=12 (4096 branches, D=512), only 163 branches remain decoherent (ε < 0.3).
+- **Frequency-class result**: 3.1× gap between ε_born and ε_comb at L=15, robust over 10 seeds
+- **Branch-level result**: At L=12 (4096 branches, D=512), only 451 branches remain decoherent (ε < 0.3).
   Survivors cluster at Born-typical frequencies, not the combinatorial peak.
 
 ## Code

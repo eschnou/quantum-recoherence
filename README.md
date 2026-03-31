@@ -13,11 +13,11 @@ A 9-qubit system evolving under exact Ising dynamics shows that when the number 
 finite-dimensional Hilbert space (D=512) can faithfully record, Born-typical frequency classes remain decoherent while
 combinatorial-peak frequencies become recoherent:
 
-|                                  | ε (recoherence) | Interpretation              |
-|----------------------------------|-----------------|-----------------------------|
-| Born frequency (n₁/L ≈ 0.75)    | 0.079           | Decoherent — stable records |
-| Combinatorial peak (n₁/L = 0.5) | 0.428           | Recoherent — records lost   |
-| **Ratio**                        | **5.4×**        |                             |
+|                                  | ε (recoherence)        | Interpretation              |
+|----------------------------------|------------------------|-----------------------------|
+| Born frequency (n₁/L ≈ 0.75)    | low                    | Decoherent — stable records |
+| Combinatorial peak (n₁/L = 0.5) | ~3× higher             | Recoherent — records lost   |
+| **Gap**                          | **3.1×** (10-seed avg) |                             |
 
 This result is robust over 10 different initial states and matches Strasberg's random matrix model at the same
 Hilbert space dimension:
@@ -44,8 +44,7 @@ of finite Hilbert spaces, even if the precise mechanism is not yet fully underst
 
 Strasberg et al. demonstrated Born-rule filtering using dense random matrix Hamiltonians (maximally non-local). Here we
 show a demonstration with **local dynamics and exact matrix exponentiation** — a transverse-field Ising model in the
-near-critical regime (H = J/2·ΣZᵢZᵢ₊₁ + hx·ΣXᵢ, integrable). The system uses only 9 qubits, making it directly
-testable on current quantum hardware.
+near-critical regime (H = J/2·ΣZᵢZᵢ₊₁ + hx·ΣXᵢ, integrable).
 
 ## Architecture
 
