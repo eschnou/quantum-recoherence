@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: "Where do the other worlds go? A toy-model test of Born-rule filtering in a local Ising chain"
+message: "If you use this software, please cite both the paper and the repository."
+type: software
+authors:
+  - family-names: Eschenauer
+    given-names: Laurent
+    email: laurent@eschenauer.be
+repository-code: https://github.com/eschnou/quantum-recoherence
+license: MIT
+references:
+  - type: article
+    title: "Approximate Decoherence, Recoherence and Records in Isolated Quantum Systems"
+    authors:
+      - family-names: Strasberg
+        given-names: Philipp
+      - family-names: Schindler
+        given-names: Joseph
+      - family-names: Wang
+        given-names: Jiaozi
+      - family-names: Winter
+        given-names: Andreas
+    year: 2026
+    url: https://arxiv.org/abs/2601.19703

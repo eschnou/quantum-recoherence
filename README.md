@@ -2,6 +2,9 @@
 
 **Born's rule emerges from finite-dimensional unitary evolution.**
 
+> **Paper:** [*Where do the other worlds go?* A toy-model test of Born-rule filtering in a local Ising chain](paper/paper.pdf)
+> — L. Eschenauer (2026)
+
 This project demonstrates that a finite-dimensional quantum system, evolving under local unitary dynamics, preferentially
 retains Born-typical statistics — without invoking Born's rule as a postulate. This is a circuit-level implementation of
 the recoherence mechanism discovered
@@ -91,6 +94,19 @@ results/
   tracking.png      — ε_born vs ε_comb divergence as L increases
   branch_*.png      — Branch-level: death, census, Gram heatmap, survivors
   one_reality.png   — Individual branch visualization
+```
+
+## Citing
+
+GitHub provides a "Cite this repository" button in the sidebar (via [`CITATION.cff`](CITATION.cff)).
+
+```bibtex
+@misc{Eschenauer2026,
+  author  = {Eschenauer, Laurent},
+  title   = {Where do the other worlds go? A toy-model test of Born-rule filtering in a local Ising chain},
+  year    = {2026},
+  url     = {https://github.com/eschnou/quantum-recoherence}
+}
 ```
 
 ## Key References
