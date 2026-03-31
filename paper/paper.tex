@@ -482,145 +482,6 @@ This work has clear limitations.
 
 
 % ============================================================================
-\section{Interpretive Discussion}
-\label{sec:interp}
-% ============================================================================
-
-\emph{The numerical results in Section~\ref{sec:experiment} stand on their own.
-This section offers speculative interpretive commentary---our reading of what the
-filtering mechanism might mean if it generalizes beyond toy models. These are
-philosophical proposals, not consequences of the simulation alone, and they go
-beyond what Strasberg and collaborators claim in the attached references.}
-
-\bigskip
-
-\subsection{Collapse as Identity, Not Process}
-
-In the standard story, wave function collapse is something that \emph{happens}:
-at the moment of measurement, the superposition is somehow reduced to a single
-outcome. The Everett picture removes this event but replaces it with a question:
-why does each branch-observer see Born-rule statistics?
-
-Our toy model suggests a possible reframing. In the simulation, the coarse-graining
-(the ``observer'') is a fixed projection---a particular way of carving up the
-Hilbert space into ``outcomes.'' The system evolves unitarily. The projections
-define what counts as a branch. And the finite geometry of the Hilbert space
-constrains which branches can coexist as approximately decoherent histories.
-
-If this picture generalizes, collapse would not be a process that happens at a
-moment in time, but a statement about which patterns of outcomes can be sustained
-as separate, non-interfering histories in a finite-dimensional space. In our
-9-qubit model, the Born-typical patterns survive and the anti-Born patterns do
-not.
-
-\subsection{The Hamiltonian Constrains the Basis}
-
-A natural objection: who chose the projection? Why Hamming weight and not some other
-decomposition of the Hilbert space?
-
-In our experiment, the choice was guided by two criteria from Strasberg's framework:
-the projector should be \emph{coarse} (high rank, so that each subspace is large
-enough for the dynamics to spread correlations within it) and \emph{compatible with
-the symmetry structure} of the Hamiltonian. The Hamming-weight threshold $\geq 4$
-satisfies both: it partitions $D = 512$ into subspaces of dimension 382 and 130,
-and total magnetization is a natural collective observable for an Ising chain.
-
-Not every decomposition works. We verified that tracking a single qubit (two rank-256 projectors,
-$d_0 = d_1 = 256$) produces $\varepsilon \approx 1$ everywhere---no
-filtering, no stable branches. The reason is intuitive: a single qubit scrambles
-completely between steps, so successive projections carry no
-memory. The Hamming-weight projector averages over all 9 qubits, which smooths out
-the fast single-qubit fluctuations and preserves enough structure for the filtering
-to appear.
-
-We did not systematically search over all possible coarse-grainings, so we cannot
-claim that Hamming weight is uniquely selected. But the contrast between
-``coarse projector shows filtering'' and ``fine projector does not'' is consistent
-with Strasberg's framework, in which the Hamiltonian constrains which
-decompositions support approximately decoherent histories.
-
-\subsection{Anti-Born Branches: Not Just Unlikely, But Indistinct}
-
-The usual explanation for why we do not see anti-Born statistics is that those
-branches have low squared amplitude---they are ``unlikely.'' The filtering
-mechanism suggests something additional. In our simulation, the anti-Born branches
-do not just have low weight---they also lose approximate decoherence, overlapping
-significantly with neighboring branches.
-
-The all-zeros branch is a concrete example. Its weight is
-$2 \times 10^{-8}$, and its recoherence parameter is 0.77: it shares most of
-its overlap structure with neighboring branches. Whether this loss of decoherence
-constitutes a loss of ``separate reality'' depends on interpretive commitments
-we do not adjudicate here. But numerically, these branches fail the standard
-decoherent-histories criterion for classicality.
-
-This observation---that anti-Born branches lose decoherence, not just
-weight---shifts the emphasis from ``how likely is this branch?'' to ``does this
-branch maintain the approximate decoherence needed for stable records?''
-
-\subsection{Local Couplings}
-
-One might worry that the filtering pattern depends on the non-local, all-to-all
-coupling of random matrix Hamiltonians. Our Ising example provides one data point
-against this: the ZZ couplings are nearest-neighbor only, and the single-qubit
-fields are local. This is a baby lattice model with the same tensor-product
-structure $\mathcal{H} = \bigotimes_i \mathcal{H}_i$ that underlies lattice field
-theory. The fact that the qualitative filtering pattern appears with local gates
-is suggestive, though a single 9-qubit example obviously cannot establish
-generality.
-
-\subsection{Finite Dimensions as Physics, Not Limitation}
-
-Strasberg's mechanism requires finite $D$. This might seem restrictive, since
-textbook quantum field theory uses infinite-dimensional Fock spaces. But any lattice
-regularization of a quantum field theory lives in a finite-dimensional factored
-Hilbert space $\mathcal{H} = \bigotimes_x \mathcal{H}_x$, and physical
-arguments---the Bekenstein bound, holographic entropy bounds---independently suggest
-that the Hilbert space accessible to a bounded region is finite-dimensional. The
-mechanism does not require $D$ to be small, only finite. A lattice gauge theory
-would provide the natural next test: finite $D$, local tensor-product structure,
-and a coarse-graining dictated by gauge invariance rather than chosen by hand.
-
-\subsection{Relation to Bohmian Mechanics}
-
-Bohm's pilot-wave theory~\citep{Bohm1952} shares the single-thread intuition: one
-definite configuration is real at all times, and Born's rule emerges dynamically
-rather than by postulate. Two features were always seen as weaknesses: particle
-position is the preferred variable \emph{by fiat}, and the guiding equation is an
-extra dynamical law beyond Schr\"odinger.
-
-The recoherence picture, if it generalizes, removes both. The Hamiltonian selects
-the coarse-graining basis (Section~\ref{sec:interp}): the preferred observable is
-derived, not chosen. And no guiding equation is needed---unitary evolution is the
-complete dynamics. In Bohm's framework, Born's rule requires assuming the initial
-particle distribution is $|\psi|^2$-distributed; in the recoherence framework,
-filtering is geometric---branches that violate Born statistics lose approximate
-decoherence regardless of the initial state.
-
-Whether one thread is actual (as Bohm proposed) or all Born-typical threads are
-equally real (as Everett proposed) is not decided by the mechanism. But what Bohm
-had to postulate---a preferred variable and a statistical equilibrium---the finite
-geometry constrains.
-
-\subsection{The Remaining Question}
-
-Even if the filtering mechanism generalizes, it would not explain why \emph{you}
-are in \emph{this} particular branch. The mechanism, if it holds, would explain
-why the surviving branches have Born-typical statistics. It would not explain why
-you experience one branch rather than another. That question may be about indexical
-identity rather than physics, but we note it as an open issue rather than
-dismissing it.
-
-But the picture, if it holds, is suggestive: the wave function evolves
-unitarily---as Everett proposed---yet only Born-typical branches remain
-approximately decoherent, and an observer would simply be one such branch.
-Collapse, in this reading, is not something that happens but the fact that you are
-one projection, experiencing one sequence of outcomes. If that framing survives
-scrutiny, then Copenhagen and Everett may both have been pointing at the same
-structure from different angles.
-
-
-% ============================================================================
 \section{Conclusion}
 \label{sec:conclusion}
 % ============================================================================
@@ -691,12 +552,6 @@ M.~Gell-Mann and J.~B.~Hartle.
 \newblock In W.~H.~Zurek, editor, \emph{Complexity, Entropy, and the Physics of
   Information}, pages 425--458. Addison-Wesley, 1990.
 
-\bibitem[Bohm(1952)]{Bohm1952}
-D.~Bohm.
-\newblock A Suggested Interpretation of the Quantum Theory in Terms of ``Hidden''
-  Variables. I and II.
-\newblock \emph{Physical Review}, 85(2):166--193, 1952.
-
 \bibitem[Strasberg and Schindler(2023)]{StrasbergSchindler2024}
 P.~Strasberg and J.~Schindler.
 \newblock Shearing off the tree: Emerging branch structure and Born's rule in
@@ -718,5 +573,145 @@ P.~Strasberg, J.~Schindler, J.~Wang, and A.~Winter.
 \newblock arXiv:2601.19703, 2026.
 
 \end{thebibliography}
+
+
+% ============================================================================
+\appendix
+\section{Interpretive Notes}
+\label{sec:interp}
+% ============================================================================
+
+\emph{These are personal, speculative notes---not part of the core result. They
+record how the author reads the filtering mechanism and where it might connect to
+open questions in quantum foundations. They go beyond what Strasberg and
+collaborators claim.}
+
+\bigskip
+
+\subsection{Collapse as Identity, Not Process}
+
+In the standard story, wave function collapse is something that \emph{happens}:
+at the moment of measurement, the superposition is somehow reduced to a single
+outcome. The Everett picture removes this event but replaces it with a question:
+why does each branch-observer see Born-rule statistics?
+
+Our toy model suggests a possible reframing. In the simulation, the coarse-graining
+(the ``observer'') is a fixed projection---a particular way of carving up the
+Hilbert space into ``outcomes.'' The system evolves unitarily. The projections
+define what counts as a branch. And the finite geometry of the Hilbert space
+constrains which branches can coexist as approximately decoherent histories.
+
+If this picture generalizes, collapse would not be a process that happens at a
+moment in time, but a statement about which patterns of outcomes can be sustained
+as separate, non-interfering histories in a finite-dimensional space. In our
+9-qubit model, the Born-typical patterns survive and the anti-Born patterns do
+not.
+
+\subsection{The Hamiltonian Constrains the Basis}
+\label{sec:basis}
+
+A natural objection: who chose the projection? Why Hamming weight and not some other
+decomposition of the Hilbert space?
+
+In our experiment, the choice was guided by two criteria from Strasberg's framework:
+the projector should be \emph{coarse} (high rank, so that each subspace is large
+enough for the dynamics to spread correlations within it) and \emph{compatible with
+the symmetry structure} of the Hamiltonian. The Hamming-weight threshold $\geq 4$
+satisfies both: it partitions $D = 512$ into subspaces of dimension 382 and 130,
+and total magnetization is a natural collective observable for an Ising chain.
+
+Not every decomposition works. We verified that tracking a single qubit (two rank-256 projectors,
+$d_0 = d_1 = 256$) produces $\varepsilon \approx 1$ everywhere---no
+filtering, no stable branches. The reason is intuitive: a single qubit scrambles
+completely between steps, so successive projections carry no
+memory. The Hamming-weight projector averages over all 9 qubits, which smooths out
+the fast single-qubit fluctuations and preserves enough structure for the filtering
+to appear.
+
+We did not systematically search over all possible coarse-grainings, so we cannot
+claim that Hamming weight is uniquely selected. But the contrast between
+``coarse projector shows filtering'' and ``fine projector does not'' is consistent
+with Strasberg's framework, in which the Hamiltonian constrains which
+decompositions support approximately decoherent histories.
+
+\subsection{Anti-Born Branches: Not Just Unlikely, But Indistinct}
+
+The usual explanation for why we do not see anti-Born statistics is that those
+branches have low squared amplitude---they are ``unlikely.'' The filtering
+mechanism suggests something additional. In our simulation, the anti-Born branches
+do not just have low weight---they also lose approximate decoherence, overlapping
+significantly with neighboring branches.
+
+The all-zeros branch is a concrete example. Its weight is
+$2 \times 10^{-8}$, and its recoherence parameter is 0.77: it shares most of
+its overlap structure with neighboring branches. Whether this loss of decoherence
+constitutes a loss of ``separate reality'' depends on interpretive commitments
+we do not adjudicate here. But numerically, these branches fail the standard
+decoherent-histories criterion for classicality.
+
+This observation---that anti-Born branches lose decoherence, not just
+weight---shifts the emphasis from ``how likely is this branch?'' to ``does this
+branch maintain the approximate decoherence needed for stable records?''
+
+\subsection{Local Couplings}
+
+One might worry that the filtering pattern depends on the non-local, all-to-all
+coupling of random matrix Hamiltonians. Our Ising example provides one data point
+against this: the ZZ couplings are nearest-neighbor only, and the single-qubit
+fields are local. This is a baby lattice model with the same tensor-product
+structure $\mathcal{H} = \bigotimes_i \mathcal{H}_i$ that underlies lattice field
+theory. The fact that the qualitative filtering pattern appears with local gates
+is suggestive, though a single 9-qubit example obviously cannot establish
+generality.
+
+\subsection{Finite Dimensions as Physics, Not Limitation}
+
+Strasberg's mechanism requires finite $D$. This might seem restrictive, since
+textbook quantum field theory uses infinite-dimensional Fock spaces. But any lattice
+regularization of a quantum field theory lives in a finite-dimensional factored
+Hilbert space $\mathcal{H} = \bigotimes_x \mathcal{H}_x$, and physical
+arguments---the Bekenstein bound, holographic entropy bounds---independently suggest
+that the Hilbert space accessible to a bounded region is finite-dimensional. The
+mechanism does not require $D$ to be small, only finite. A lattice gauge theory
+would provide the natural next test: finite $D$, local tensor-product structure,
+and a coarse-graining dictated by gauge invariance rather than chosen by hand.
+
+\subsection{Relation to Bohmian Mechanics}
+
+Bohm's pilot-wave theory (1952) shares the single-thread intuition: one
+definite configuration is real at all times, and Born's rule emerges dynamically
+rather than by postulate. Two features were always seen as weaknesses: particle
+position is the preferred variable \emph{by fiat}, and the guiding equation is an
+extra dynamical law beyond Schr\"odinger.
+
+The recoherence picture, if it generalizes, removes both. The Hamiltonian selects
+the coarse-graining basis (Section~\ref{sec:basis}): the preferred observable is
+derived, not chosen. And no guiding equation is needed---unitary evolution is the
+complete dynamics. In Bohm's framework, Born's rule requires assuming the initial
+particle distribution is $|\psi|^2$-distributed; in the recoherence framework,
+filtering is geometric---branches that violate Born statistics lose approximate
+decoherence regardless of the initial state.
+
+Whether one thread is actual (as Bohm proposed) or all Born-typical threads are
+equally real (as Everett proposed) is not decided by the mechanism. But what Bohm
+had to postulate---a preferred variable and a statistical equilibrium---the finite
+geometry constrains.
+
+\subsection{The Remaining Question}
+
+Even if the filtering mechanism generalizes, it would not explain why \emph{you}
+are in \emph{this} particular branch. The mechanism, if it holds, would explain
+why the surviving branches have Born-typical statistics. It would not explain why
+you experience one branch rather than another. That question may be about indexical
+identity rather than physics, but we note it as an open issue rather than
+dismissing it.
+
+But the picture, if it holds, is suggestive: the wave function evolves
+unitarily---as Everett proposed---yet only Born-typical branches remain
+approximately decoherent, and an observer would simply be one such branch.
+Collapse, in this reading, is not something that happens but the fact that you are
+one projection, experiencing one sequence of outcomes. If that framing survives
+scrutiny, then Copenhagen and Everett may both have been pointing at the same
+structure from different angles.
 
 \end{document}
