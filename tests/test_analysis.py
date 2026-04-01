@@ -3,7 +3,7 @@
 import numpy as np
 
 from recohere.analysis import compute_epsilon, compute_gram_matrix
-from recohere.ising_direct import IsingDirectParams, simulate_and_analyze
+from recohere.ising_direct import IsingDirectParams, _build_mask, simulate_and_analyze
 
 
 def test_gram_hermitian():
@@ -72,5 +72,42 @@ def test_epsilon_zero_weight():
 def test_ising_gram_trace_one():
     """Ising model: Gram matrix trace should be 1 (completeness)."""
     p = IsingDirectParams(m=6, L=8, hamming_threshold=3, seed=42)
+    result = simulate_and_analyze(p)
+    np.testing.assert_allclose(np.trace(result.gram_matrix).real, 1.0, atol=1e-10)
+
+
+def test_build_mask_hamming():
+    """Hamming mask: known p1 for m=9, threshold=4."""
+    mask = _build_mask(9, "hamming", 4)
+    assert mask.shape == (512,)
+    assert mask.dtype == bool
+    np.testing.assert_allclose(mask.sum() / 512, 0.746, atol=0.001)
+
+
+def test_build_mask_left_heavy():
+    """Left-heavy mask: first 5 qubits, threshold=2 gives p1=0.8125."""
+    mask = _build_mask(9, "left_heavy", 2)
+    assert mask.shape == (512,)
+    np.testing.assert_allclose(mask.sum() / 512, 0.8125, atol=1e-10)
+
+
+def test_build_mask_parity():
+    """Parity mask: exactly half the basis states have odd parity."""
+    mask = _build_mask(9, "parity", 4)  # threshold ignored
+    assert mask.shape == (512,)
+    assert mask.sum() == 256
+
+
+def test_build_mask_spatial_majority():
+    """Spatial majority: first 5 qubits, majority threshold gives p1=0.5."""
+    mask = _build_mask(9, "spatial_majority", 99)  # threshold ignored
+    assert mask.shape == (512,)
+    assert mask.sum() == 256
+
+
+def test_projector_gram_trace_one():
+    """Non-default projector: Gram matrix trace should still be 1."""
+    p = IsingDirectParams(m=6, L=6, hamming_threshold=2,
+                          projector="left_heavy", seed=42)
     result = simulate_and_analyze(p)
     np.testing.assert_allclose(np.trace(result.gram_matrix).real, 1.0, atol=1e-10)

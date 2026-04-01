@@ -13,12 +13,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import comb
+from typing import Literal
 
 import cirq
 import numpy as np
 from scipy.linalg import expm
 
 from recohere.analysis import CoherenceResult, compute_epsilon, compute_gram_matrix
+
+Projector = Literal["hamming", "spatial_majority", "left_heavy", "parity"]
 
 
 @dataclass(frozen=True)
@@ -33,11 +36,46 @@ class IsingDirectParams:
     dt: float = 1.2
     seed: int = 42
     exact_expm: bool = True  # use exact matrix exponential
+    projector: Projector = "hamming"
 
     @property
     def p1(self) -> float:
-        d1 = sum(comb(self.m, k) for k in range(self.hamming_threshold, self.m + 1))
-        return d1 / (2**self.m)
+        if self.projector == "hamming":
+            d1 = sum(comb(self.m, k) for k in range(self.hamming_threshold, self.m + 1))
+            return d1 / (2**self.m)
+        mask = _build_mask(self.m, self.projector, self.hamming_threshold)
+        return int(np.sum(mask)) / (2**self.m)
+
+
+def _build_mask(m: int, projector: Projector, hamming_threshold: int) -> np.ndarray:
+    """Build the boolean outcome mask for the given projector type.
+
+    Returns (D,) bool array where True means outcome "1".
+    """
+    D = 2**m
+    if projector == "hamming":
+        return np.array([bin(v).count("1") >= hamming_threshold for v in range(D)])
+    elif projector == "spatial_majority":
+        # "1" if majority of the first ceil(m/2) qubits are |1>
+        n_sub = (m + 1) // 2
+        sub_threshold = (n_sub + 1) // 2  # strict majority
+        return np.array([
+            bin(v & ((1 << n_sub) - 1)).count("1") >= sub_threshold
+            for v in range(D)
+        ])
+    elif projector == "left_heavy":
+        # "1" if first ceil(m/2) qubits have HW >= hamming_threshold
+        # Structurally different from global Hamming: only sees a spatial subsystem
+        n_sub = (m + 1) // 2
+        sub_mask = (1 << n_sub) - 1
+        return np.array([
+            bin(v & sub_mask).count("1") >= hamming_threshold
+            for v in range(D)
+        ])
+    elif projector == "parity":
+        return np.array([bin(v).count("1") % 2 == 1 for v in range(D)])
+    else:
+        raise ValueError(f"Unknown projector: {projector}")
 
 
 def build_ising_setup(params: IsingDirectParams) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -90,7 +128,7 @@ def build_ising_setup(params: IsingDirectParams) -> tuple[np.ndarray, np.ndarray
                 sc.append(cirq.rz(2 * params.hz * dt_step).on(q))
         U = cirq.unitary(sc)
 
-    mask_1 = np.array([bin(v).count("1") >= params.hamming_threshold for v in range(D)])
+    mask_1 = _build_mask(m, params.projector, params.hamming_threshold)
     return psi0, U, mask_1
 
 

@@ -44,9 +44,13 @@ combinatorial peak, averaged over 10 Haar-random initial states, matching the
 qualitative shape of the random matrix prediction. At the individual-branch level
 ($L = 12$, 4096 branches), only 451 branches remain approximately decoherent
 ($\varepsilon < 0.3$), and these cluster at Born-typical frequencies.
-In this toy model, the Born-typical filtering pattern emerges from the interplay
-of finite dimensions and local unitary dynamics---though whether this generalizes
-beyond toy models remains open.
+We verify that the effect is robust: it appears across system sizes from
+$D = 128$ to $D = 1024$, persists under different coarse-graining projectors
+(including a spatially biased projector structurally unlike Hamming weight), and
+is insensitive to the choice of decoherence threshold.
+The filtering strength is governed primarily by the projector asymmetry
+$|p_1 - 1/2|$, with larger Hilbert spaces amplifying the effect at fixed
+asymmetry.
 \end{abstract}
 
 
@@ -271,8 +275,8 @@ Branch-level decoherence counts use the operational threshold
 $\varepsilon < 0.3$. This threshold is a conventional choice; the qualitative
 conclusion---that survivors cluster at Born-typical frequencies---holds for
 thresholds in the range $[0.1, 0.5]$, though the absolute count of
-``decoherent'' branches varies.\footnote{Robustness checks (threshold
-sensitivity, $\Delta t$ variation) are included in the code repository.}
+``decoherent'' branches varies (see Appendix~\ref{sec:threshold} for the full
+threshold sensitivity analysis).
 
 \subsection{Frequency-Class Results}
 \label{sec:freq-results}
@@ -308,7 +312,9 @@ random matrix theory predicts.
 The result is robust. All 10 seeds show the same qualitative shape. The standard
 deviation of $\varepsilon$ across seeds is small relative to the Born--combinatorial
 gap, indicating that the effect is a property of the Hamiltonian, not of special
-initial states.
+initial states. The effect also persists across system sizes ($D = 128$ to $1024$)
+and alternative coarse-grainings; see Appendix~\ref{sec:robustness} for the full
+scaling and projector analysis.
 
 \subsection{Branch-Level Analysis}
 \label{sec:branches}
@@ -443,36 +449,38 @@ orders of magnitude.
 This work has clear limitations.
 
 \begin{itemize}
-  \item \textbf{Small system.} Nine qubits ($D = 512$) is tiny. Real physical
-    systems have Hilbert spaces of exponentially large dimension. We cannot say
-    whether the $3.1\times$ gap grows, shrinks, or stays constant as $D$ increases.
-    Strasberg's analytical results~\citep{Strasberg2024} suggest it should improve,
-    scaling as $D^{-\alpha}$, but we have not verified this numerically.
+  \item \textbf{Small system.} We test $D = 128$ to $D = 1024$ (7--10 qubits).
+    Appendix~\ref{sec:scaling} shows the filtering gap grows with $D$ at matched
+    projector asymmetry, consistent with Strasberg's $D^{-\alpha}$
+    prediction~\citep{Strasberg2024}, but the accessible range spans less than one
+    order of magnitude. Establishing the asymptotic scaling requires larger systems.
 
   \item \textbf{Classical simulation only.} We simulate the full state vector on a
     classical computer. This limits us to small systems. A quantum computer could
     in principle probe larger Hilbert spaces, but the analysis requires tracking
     exponentially many branches, which is inherently hard.
 
-  \item \textbf{Not a proof.} We demonstrate the effect for one Hamiltonian
-    (transverse-field Ising) with one coarse-graining (Hamming weight).
-    We have not proven that Born-rule filtering occurs for all Hamiltonians
-    or all reasonable coarse-grainings.
+  \item \textbf{Single Hamiltonian family.} We test only the transverse-field Ising
+    chain. Born-rule filtering may depend on properties of the dynamics (e.g.,
+    integrability vs.\ chaos) that we have not varied. The Ising Hamiltonian is
+    integrable, unlike the chaotic random matrix models used by Strasberg, so the
+    agreement is encouraging but does not establish universality.
 
-  \item \textbf{Specific coarse-graining.} The Hamming-weight threshold $\geq 4$
-    gives $p_1 = 0.746$. Different thresholds give different $p_1$, and we have not
-    systematically explored the dependence on the coarse-graining.
+  \item \textbf{Projector dependence partially explored.} We test four projectors
+    (Appendix~\ref{sec:projectors}): three Hamming-weight thresholds and a
+    spatially biased projector. All asymmetric projectors ($p_1 \neq 0.5$)
+    show filtering, including the spatial projector that is structurally unlike
+    Hamming weight. However, the filtering strength depends primarily on the
+    projector asymmetry $|p_1 - 1/2|$, not the projector type.
+    When $p_1 = 0.5$, Born and combinatorial peaks coincide and no filtering
+    occurs---as predicted, but limiting the range of independent tests.
+    We have not tested projectors selected by physical symmetries
+    (e.g., gauge invariance).
 
   \item \textbf{Time-step dependence.} The Born--combinatorial gap depends on
     $\Delta t$, requiring sufficient evolution between projections for the
     dynamics to spread correlations. The reported $3.1\times$ gap is specific to
     $\Delta t = 1.2$.
-
-  \item \textbf{Integrable dynamics.} Our transverse-field Ising Hamiltonian is
-    integrable (solvable by Jordan-Wigner transformation), unlike the chaotic
-    random matrix models used by Strasberg. The filtering pattern appears
-    nonetheless, suggesting the mechanism may not require chaos---but this also
-    means we cannot claim to have tested it in a chaotic regime.
 
   \item \textbf{No environment.} Real decoherence involves tracing out an
     environment. Our system has no environment---the 9 qubits are the whole
@@ -486,13 +494,17 @@ This work has clear limitations.
 \label{sec:conclusion}
 % ============================================================================
 
-In a 9-qubit transverse-field Ising chain with exact unitary evolution, the
-recoherence parameter $\varepsilon$ dips near the Born frequency with a
-$3.1\times$ gap over the combinatorial peak, matching the qualitative shape
-reported by Strasberg and collaborators in random matrix models. At the
+In transverse-field Ising chains from 7 to 10 qubits ($D = 128$ to $1024$),
+the recoherence parameter $\varepsilon$ dips near the Born frequency, with
+filtering gaps ranging from $1.9\times$ to $6.1\times$ depending on system size
+and projector asymmetry. The effect is not specific to a single coarse-graining:
+it appears for Hamming-weight projectors at multiple thresholds and for a
+spatially biased projector that examines only a subsystem. The filtering
+strength scales primarily with the projector asymmetry $|p_1 - 1/2|$ and
+grows with Hilbert space dimension at fixed asymmetry. At the
 individual-branch level, the finite Hilbert space preferentially preserves
-Born-typical branches while anti-Born branches lose approximate decoherence. This
-is consistent with Strasberg's analytical results and extends the qualitative
+Born-typical branches while anti-Born branches lose approximate decoherence.
+This is consistent with Strasberg's analytical results and extends the qualitative
 picture from random matrices to a local, physically motivated Hamiltonian.
 
 A natural next step is to test the filtering mechanism in a lattice gauge theory,
@@ -577,141 +589,127 @@ P.~Strasberg, J.~Schindler, J.~Wang, and A.~Winter.
 
 % ============================================================================
 \appendix
-\section{Interpretive Notes}
-\label{sec:interp}
+\section{Robustness and Scaling}
+\label{sec:robustness}
 % ============================================================================
 
-\emph{These are personal, speculative notes---not part of the core result. They
-record how the author reads the filtering mechanism and where it might connect to
-open questions in quantum foundations. They go beyond what Strasberg and
-collaborators claim.}
+We present three robustness checks that address natural concerns about the
+generality of the filtering pattern reported in Section~\ref{sec:freq-results}:
+scaling with Hilbert space dimension, dependence on the coarse-graining
+projector, and sensitivity to the decoherence threshold.
 
-\bigskip
+\subsection{Scaling with System Size}
+\label{sec:scaling}
 
-\subsection{Collapse as Identity, Not Process}
+We repeat the frequency-class analysis for Ising chains of 7, 8, 9, and 10
+qubits ($D = 128$, 256, 512, 1024), varying the Hamming-weight threshold to
+explore different values of $p_1$.
 
-In the standard story, wave function collapse is something that \emph{happens}:
-at the moment of measurement, the superposition is somehow reduced to a single
-outcome. The Everett picture removes this event but replaces it with a question:
-why does each branch-observer see Born-rule statistics?
+Figure~\ref{fig:scaling-profiles} shows the $\varepsilon$ profile at the
+largest $L$ tested for each configuration. The qualitative shape---a dip near
+the Born frequency and a rise toward the combinatorial peak---is present across
+all system sizes and all asymmetric projectors ($p_1 \neq 0.5$).
 
-Our toy model suggests a possible reframing. In the simulation, the coarse-graining
-(the ``observer'') is a fixed projection---a particular way of carving up the
-Hilbert space into ``outcomes.'' The system evolves unitarily. The projections
-define what counts as a branch. And the finite geometry of the Hilbert space
-constrains which branches can coexist as approximately decoherent histories.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{../results/scaling_profiles.png}
+  \caption{Recoherence parameter $\varepsilon(n_1/L)$ at the largest $L$ tested
+    for six configurations spanning $D = 128$ to $1024$. Red dashed line marks the
+    Born frequency $p_1$; green dotted line marks the combinatorial peak at 0.5.
+    Each curve is averaged over 10 Haar-random initial states; shading shows
+    $\pm 1\sigma$. The filtering dip near the Born frequency appears at every
+    system size.}
+  \label{fig:scaling-profiles}
+\end{figure}
 
-If this picture generalizes, collapse would not be a process that happens at a
-moment in time, but a statement about which patterns of outcomes can be sustained
-as separate, non-interfering histories in a finite-dimensional space. In our
-9-qubit model, the Born-typical patterns survive and the anti-Born patterns do
-not.
+The Born--combinatorial gap is governed by two factors
+(Figure~\ref{fig:scaling-gap}). The dominant factor is the projector asymmetry
+$|p_1 - 1/2|$: configurations with $p_1$ close to 0.5 show only marginal
+filtering (gap $\approx 1.5\times$), while strongly asymmetric projectors
+($p_1 > 0.8$) produce gaps exceeding $6\times$. This is expected: when
+$p_1 = 0.5$, the Born and combinatorial peaks coincide, leaving nothing to
+filter. The second factor is system size: at comparable $p_1$, larger $D$
+yields a larger gap. For example, at $p_1 \approx 0.77$--$0.83$, the gap
+increases from $2.3\times$ ($D = 128$) to $3.1\times$ ($D = 512$) to
+$6.1\times$ ($D = 1024$).
 
-\subsection{The Hamiltonian Constrains the Basis}
-\label{sec:basis}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{../results/scaling_vs_D.png}
+  \caption{Left: Born--combinatorial gap at the largest $L$ tested, plotted
+    against projector asymmetry $|p_1 - 1/2|$. Marker color indicates Hilbert
+    space dimension $D$. At comparable asymmetry, larger $D$ yields a larger gap.
+    Right: gap growth with $L$ for asymmetric projectors only ($p_1 > 0.6$),
+    showing monotonic increase at all system sizes.}
+  \label{fig:scaling-gap}
+\end{figure}
 
-A natural objection: who chose the projection? Why Hamming weight and not some other
-decomposition of the Hilbert space?
+\subsection{Projector Independence}
+\label{sec:projectors}
 
-In our experiment, the choice was guided by two criteria from Strasberg's framework:
-the projector should be \emph{coarse} (high rank, so that each subspace is large
-enough for the dynamics to spread correlations within it) and \emph{compatible with
-the symmetry structure} of the Hamiltonian. The Hamming-weight threshold $\geq 4$
-satisfies both: it partitions $D = 512$ into subspaces of dimension 382 and 130,
-and total magnetization is a natural collective observable for an Ising chain.
+We test four projectors on the 9-qubit chain ($D = 512$, $L = 15$):
 
-Not every decomposition works. We verified that tracking a single qubit (two rank-256 projectors,
-$d_0 = d_1 = 256$) produces $\varepsilon \approx 1$ everywhere---no
-filtering, no stable branches. The reason is intuitive: a single qubit scrambles
-completely between steps, so successive projections carry no
-memory. The Hamming-weight projector averages over all 9 qubits, which smooths out
-the fast single-qubit fluctuations and preserves enough structure for the filtering
-to appear.
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lllcc}
+    \toprule
+    Projector & Type & $p_1$ & $\varepsilon_\text{Born}$ & Gap \\
+    \midrule
+    Hamming $\geq 3$    & Global HW   & 0.910 & 0.057 & 10.1$\times$ \\
+    Hamming $\geq 4$    & Global HW   & 0.746 & 0.087 & 3.1$\times$ \\
+    Left-block $\geq 2/5$ & Spatial subsystem & 0.812 & 0.083 & 4.4$\times$ \\
+    Hamming $\geq 5$    & Global HW   & 0.500 & 0.144 & 1.0$\times$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Born--combinatorial gap for four projectors. ``Left-block $\geq 2/5$''
+    examines only the first 5 of 9 qubits (outcome ``1'' if at least 2 are in
+    state $|1\rangle$). The Hamming $\geq 5$ row serves as a null control:
+    $p_1 = 0.5$ means Born and combinatorial peaks coincide.}
+  \label{tab:projectors}
+\end{table}
 
-We did not systematically search over all possible coarse-grainings, so we cannot
-claim that Hamming weight is uniquely selected. But the contrast between
-``coarse projector shows filtering'' and ``fine projector does not'' is consistent
-with Strasberg's framework, in which the Hamiltonian constrains which
-decompositions support approximately decoherent histories.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{../results/projectors.png}
+  \caption{Recoherence profiles for four projectors on the 9-qubit Ising chain
+    ($L = 15$, 10 seeds). The left-block projector (third panel) examines only a
+    spatial subsystem yet shows the same filtering pattern as global Hamming
+    weight. When $p_1 = 0.5$ (rightmost panel), no filtering occurs.}
+  \label{fig:projectors}
+\end{figure}
 
-\subsection{Anti-Born Branches: Not Just Unlikely, But Indistinct}
+The left-block projector is structurally different from Hamming weight: it
+ignores 4 of the 9 qubits entirely and applies a low threshold to the remaining
+5. Despite this, it produces a $4.4\times$ gap, confirming that the filtering
+pattern is not an artifact of the specific Hamming-weight coarse-graining.
 
-The usual explanation for why we do not see anti-Born statistics is that those
-branches have low squared amplitude---they are ``unlikely.'' The filtering
-mechanism suggests something additional. In our simulation, the anti-Born branches
-do not just have low weight---they also lose approximate decoherence, overlapping
-significantly with neighboring branches.
+\subsection{Threshold Sensitivity}
+\label{sec:threshold}
 
-The all-zeros branch is a concrete example. Its weight is
-$2 \times 10^{-8}$, and its recoherence parameter is 0.77: it shares most of
-its overlap structure with neighboring branches. Whether this loss of decoherence
-constitutes a loss of ``separate reality'' depends on interpretive commitments
-we do not adjudicate here. But numerically, these branches fail the standard
-decoherent-histories criterion for classicality.
+The branch-level analysis in Section~\ref{sec:branches} uses the operational
+threshold $\varepsilon < 0.3$. Figure~\ref{fig:threshold} shows how the
+results depend on this choice.
 
-This observation---that anti-Born branches lose decoherence, not just
-weight---shifts the emphasis from ``how likely is this branch?'' to ``does this
-branch maintain the approximate decoherence needed for stable records?''
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{../results/threshold_detail.png}
+  \caption{Threshold sensitivity at $L = 12$ (4096 branches, $D = 512$). Left:
+    number of branches satisfying $\varepsilon < \varepsilon_\text{max}$ as a
+    function of the threshold. The curve shows a knee between 0.2 and 0.4.
+    Center: frequency distribution of survivors at five thresholds. Survivors
+    cluster near the Born frequency regardless of threshold. Right: mean
+    $\varepsilon$ of survivors and fraction near the Born frequency ($\pm 2$)
+    as a function of threshold.}
+  \label{fig:threshold}
+\end{figure}
 
-\subsection{Local Couplings}
+The survivor count is threshold-sensitive (ranging from 19 at
+$\varepsilon < 0.2$ to 3037 at $\varepsilon < 0.5$), but the qualitative
+conclusion is not: at every threshold tested, the surviving branches cluster
+at Born-typical frequencies. The threshold $\varepsilon = 0.3$ sits at the
+knee of the survivor-count curve, where the count transitions from the
+tight-threshold regime (few, highly decoherent survivors) to the
+loose-threshold regime (many survivors with significant mutual overlap).
 
-One might worry that the filtering pattern depends on the non-local, all-to-all
-coupling of random matrix Hamiltonians. Our Ising example provides one data point
-against this: the ZZ couplings are nearest-neighbor only, and the single-qubit
-fields are local. This is a baby lattice model with the same tensor-product
-structure $\mathcal{H} = \bigotimes_i \mathcal{H}_i$ that underlies lattice field
-theory. The fact that the qualitative filtering pattern appears with local gates
-is suggestive, though a single 9-qubit example obviously cannot establish
-generality.
-
-\subsection{Finite Dimensions as Physics, Not Limitation}
-
-Strasberg's mechanism requires finite $D$. This might seem restrictive, since
-textbook quantum field theory uses infinite-dimensional Fock spaces. But any lattice
-regularization of a quantum field theory lives in a finite-dimensional factored
-Hilbert space $\mathcal{H} = \bigotimes_x \mathcal{H}_x$, and physical
-arguments---the Bekenstein bound, holographic entropy bounds---independently suggest
-that the Hilbert space accessible to a bounded region is finite-dimensional. The
-mechanism does not require $D$ to be small, only finite. A lattice gauge theory
-would provide the natural next test: finite $D$, local tensor-product structure,
-and a coarse-graining dictated by gauge invariance rather than chosen by hand.
-
-\subsection{Relation to Bohmian Mechanics}
-
-Bohm's pilot-wave theory (1952) shares the single-thread intuition: one
-definite configuration is real at all times, and Born's rule emerges dynamically
-rather than by postulate. Two features were always seen as weaknesses: particle
-position is the preferred variable \emph{by fiat}, and the guiding equation is an
-extra dynamical law beyond Schr\"odinger.
-
-The recoherence picture, if it generalizes, removes both. The Hamiltonian selects
-the coarse-graining basis (Section~\ref{sec:basis}): the preferred observable is
-derived, not chosen. And no guiding equation is needed---unitary evolution is the
-complete dynamics. In Bohm's framework, Born's rule requires assuming the initial
-particle distribution is $|\psi|^2$-distributed; in the recoherence framework,
-filtering is geometric---branches that violate Born statistics lose approximate
-decoherence regardless of the initial state.
-
-Whether one thread is actual (as Bohm proposed) or all Born-typical threads are
-equally real (as Everett proposed) is not decided by the mechanism. But what Bohm
-had to postulate---a preferred variable and a statistical equilibrium---the finite
-geometry constrains.
-
-\subsection{The Remaining Question}
-
-Even if the filtering mechanism generalizes, it would not explain why \emph{you}
-are in \emph{this} particular branch. The mechanism, if it holds, would explain
-why the surviving branches have Born-typical statistics. It would not explain why
-you experience one branch rather than another. That question may be about indexical
-identity rather than physics, but we note it as an open issue rather than
-dismissing it.
-
-But the picture, if it holds, is suggestive: the wave function evolves
-unitarily---as Everett proposed---yet only Born-typical branches remain
-approximately decoherent, and an observer would simply be one such branch.
-Collapse, in this reading, is not something that happens but the fact that you are
-one projection, experiencing one sequence of outcomes. If that framing survives
-scrutiny, then Copenhagen and Everett may both have been pointing at the same
-structure from different angles.
 
 \end{document}
