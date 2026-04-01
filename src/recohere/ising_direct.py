@@ -78,6 +78,25 @@ def _build_mask(m: int, projector: Projector, hamming_threshold: int) -> np.ndar
         raise ValueError(f"Unknown projector: {projector}")
 
 
+def build_product_unitary(m: int, theta: float) -> np.ndarray:
+    """Build product rotation U = exp(-i theta X)^{otimes m}.
+
+    Each qubit rotates independently — no entanglement, no scrambling.
+    This is the non-scrambling control for testing whether Born-rule
+    filtering requires dynamical complexity or is purely kinematic.
+    """
+    D = 2**m
+    # Single-qubit rotation: exp(-i theta X) = cos(theta) I - i sin(theta) X
+    c, s = np.cos(theta), np.sin(theta)
+    u1 = np.array([[c, -1j * s], [-1j * s, c]], dtype=complex)
+    # Build m-qubit product unitary via tensor product
+    U = np.array([[1.0]], dtype=complex)
+    for _ in range(m):
+        U = np.kron(U, u1)
+    assert U.shape == (D, D)
+    return U
+
+
 def build_ising_setup(params: IsingDirectParams) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Build initial state, unitary, and outcome mask from params.
 
@@ -152,6 +171,69 @@ def simulate_and_analyze(params: IsingDirectParams) -> CoherenceResult:
             evolved = U @ state
 
             # Vectorized projection
+            state_0 = np.where(~mask_1, evolved, 0.0)
+            state_1 = np.where(mask_1, evolved, 0.0)
+
+            for outcome, projected in [(0, state_0), (1, state_1)]:
+                if np.vdot(projected, projected).real < 1e-30:
+                    continue
+                new_n1 = n1_so_far + outcome
+                if new_n1 not in next_states:
+                    next_states[new_n1] = np.zeros(D, dtype=complex)
+                next_states[new_n1] += projected
+
+        current = next_states
+
+    freq_states = [np.zeros(D, dtype=complex) for _ in range(L + 1)]
+    for n1, state in current.items():
+        if 0 <= n1 <= L:
+            freq_states[n1] = state
+
+    gram = compute_gram_matrix(freq_states)
+    weights = gram.diagonal().real
+    eps = compute_epsilon(gram)
+
+    return CoherenceResult(
+        frequency_classes=np.arange(L + 1),
+        gram_matrix=gram,
+        epsilon=eps,
+        weights=weights,
+        born_frequency=L * params.p1,
+    )
+
+
+def simulate_product(params: IsingDirectParams, theta: float | None = None) -> CoherenceResult:
+    """Product-rotation control: same projectors, no scrambling.
+
+    Uses U = exp(-i theta X)^{otimes m} instead of the Ising unitary.
+    Default theta = hx * dt to match the X-rotation strength of the Ising model.
+    """
+    L = params.L
+    D = 2**params.m
+
+    if L > 25:
+        raise NotImplementedError(f"L={L} too large for branching")
+
+    if theta is None:
+        theta = params.hx * params.dt
+
+    # Same Haar-random initial state (same seed → same psi0)
+    rng = np.random.default_rng(params.seed)
+    psi0 = rng.standard_normal(D) + 1j * rng.standard_normal(D)
+    psi0 = (psi0 / np.linalg.norm(psi0)).astype(np.complex128)
+
+    U = build_product_unitary(params.m, theta)
+    mask_1 = _build_mask(params.m, params.projector, params.hamming_threshold)
+
+    # Identical branching logic
+    current = {0: psi0.copy()}
+
+    for step in range(L):
+        next_states: dict[int, np.ndarray] = {}
+
+        for n1_so_far, state in current.items():
+            evolved = U @ state
+
             state_0 = np.where(~mask_1, evolved, 0.0)
             state_1 = np.where(mask_1, evolved, 0.0)
 

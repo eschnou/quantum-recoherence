@@ -42,6 +42,10 @@ combinatorial peak, averaged over 10 Haar-random initial states, matching the
 qualitative shape of the random matrix prediction. At the individual-branch level
 ($L = 12$, 4096 branches), only 451 branches remain approximately decoherent
 ($\varepsilon < 0.3$), and these cluster at Born-typical frequencies.
+A non-scrambling control---replacing the Ising
+Hamiltonian with independent single-qubit rotations at matched $p_1$---produces
+no stable filtering, demonstrating that projector asymmetry alone is insufficient
+and that scrambling dynamics are a necessary ingredient.
 We verify that the effect is robust: it appears across system sizes from
 $D = 128$ to $D = 1024$, persists under different coarse-graining projectors
 (including a spatially biased projector structurally unlike Hamming weight), and
@@ -319,6 +323,53 @@ initial states. The effect also persists across system sizes ($D = 128$ to $1024
 and alternative coarse-grainings; see Appendix~\ref{sec:robustness} for the full
 scaling and projector analysis.
 
+\subsection{Non-Scrambling Control}
+\label{sec:product-control}
+
+The filtering strength scales with the projector asymmetry $|p_1 - 1/2|$
+(Table~\ref{tab:projectors}), and vanishes when $p_1 = 0.5$. This raises a
+natural question: is the filtering a nontrivial dynamical effect, or merely a
+kinematic consequence of having unequal projector subspaces? In other words,
+what is the null hypothesis?
+
+We test this by replacing the Ising Hamiltonian with a product rotation
+$U_{\text{prod}} = e^{-i\theta X}{}^{\otimes m}$, where each qubit rotates
+independently (with $\theta = h_x \Delta t$ to match the rotation strength of
+the Ising model). This unitary generates no entanglement and no scrambling. The
+projectors, initial states, $p_1$, and analysis pipeline are identical to the
+Ising experiment.
+
+Figure~\ref{fig:product-control} shows the result. Under the Ising (scrambling)
+dynamics, the Born frequency class is strongly decoherent
+($\varepsilon_{\text{Born}} = 0.087$) with a $3.1\times$ gap over the
+combinatorial peak. Under the product rotation, the gap collapses to
+$1.3\times$, and \emph{no frequency class achieves low $\varepsilon$}: even the
+Born frequency has $\varepsilon \approx 0.5$, indicating substantial recoherence
+everywhere. Sweeping $L$ from 5 to 25 confirms that this is not a matter of
+convergence: the product rotation produces erratic oscillations in both
+$\varepsilon_{\text{Born}}$ and $\varepsilon_{\text{comb}}$ with no stable
+filtering at any history length, consistent with the quasiperiodic dynamics of
+non-interacting qubits.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../results/product_control.png}
+  \caption{Non-scrambling control. Recoherence parameter $\varepsilon(n_1/L)$
+    for the Ising chain (red) and a product rotation (gray) at $D = 512$,
+    $L = 15$, $p_1 = 0.746$. Averaged over 10 Haar-random initial states;
+    shading shows $\pm 1\sigma$. The product rotation shows no filtering: all
+    frequency classes are substantially recoherent
+    ($\varepsilon \gtrsim 0.5$).}
+  \label{fig:product-control}
+\end{figure}
+
+The projector asymmetry determines \emph{which} frequencies can survive as
+decoherent branches, but it does not by itself cause any frequency class to
+decohere. The scrambling dynamics are a necessary second ingredient: they spread
+amplitude across the Hilbert space in a way that allows the finite-dimensional
+geometry to selectively preserve Born-typical branches.
+
+
 \subsection{Branch-Level Analysis}
 \label{sec:branches}
 
@@ -468,6 +519,9 @@ This work has clear limitations.
     integrability vs.\ chaos) that we have not varied. The Ising Hamiltonian is
     integrable, unlike the chaotic random matrix models used by Strasberg, so the
     agreement is encouraging but does not establish universality.
+    The product-rotation control (Sec.~\ref{sec:product-control}) shows that
+    \emph{some} dynamical complexity is necessary, but the boundary between
+    sufficient and insufficient scrambling remains unexplored.
 
   \item \textbf{Projector dependence partially explored.} We test four projectors
     (Appendix~\ref{sec:projectors}): three Hamming-weight thresholds and a
@@ -504,8 +558,12 @@ and projector asymmetry. The effect is not specific to a single coarse-graining:
 it appears for Hamming-weight projectors at multiple thresholds and for a
 spatially biased projector that examines only a subsystem. The filtering
 strength scales primarily with the projector asymmetry $|p_1 - 1/2|$ and
-grows with Hilbert space dimension at fixed asymmetry. At the
-individual-branch level, the finite Hilbert space preferentially preserves
+grows with Hilbert space dimension at fixed asymmetry.
+A non-scrambling control (product rotation at matched $p_1$) produces no stable
+filtering, showing that projector asymmetry is necessary but not sufficient:
+the dynamics must spread amplitude across the Hilbert space for
+finite-dimensional geometry to selectively preserve Born-typical branches.
+At the individual-branch level, the finite Hilbert space preferentially preserves
 Born-typical branches while anti-Born branches lose approximate decoherence.
 This is consistent with Strasberg's analytical results and extends the qualitative
 picture from random matrices to a local, physically motivated Hamiltonian.
