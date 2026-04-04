@@ -64,7 +64,50 @@ def pick_branches(r):
     }
 
 
-def plot_realities(r, picks):
+def compute_epsilon_trajectories(r, picks):
+    """Compute epsilon at each intermediate step for the picked branches."""
+    from recohere.ising_direct import build_ising_setup
+    from recohere.branches import _normalize_states, _normalized_gram_epsilon
+
+    p = IsingDirectParams(m=M, L=L, hamming_threshold=THR, dt=DT, seed=SEED)
+    psi0, U, mask_1 = build_ising_setup(p)
+
+    # Replay all branches step by step, computing Gram at each step
+    current = {(): psi0.copy()}
+    trajectories = {idx: [] for idx in picks.values()}
+    pick_hists = {idx: r.histories[idx] for idx in picks.values()}
+
+    for step in range(L):
+        next_branches = {}
+        for hist, state in current.items():
+            evolved = U @ state
+            s0 = np.where(~mask_1, evolved, 0.0)
+            s1 = np.where(mask_1, evolved, 0.0)
+            for outcome, proj in [(0, s0), (1, s1)]:
+                if np.vdot(proj, proj).real < 1e-30:
+                    continue
+                next_branches[hist + (outcome,)] = proj
+        current = next_branches
+
+        # Compute epsilon for all branches at this step
+        hists = list(current.keys())
+        states = np.array([current[h] for h in hists])
+        weights = np.sum(np.abs(states)**2, axis=1)
+        states_norm = _normalize_states(states, weights)
+        _, epsilon = _normalized_gram_epsilon(states_norm)
+        eps_map = {h: epsilon[i] for i, h in enumerate(hists)}
+
+        # Extract epsilon for our picked branches
+        for idx in picks.values():
+            prefix = pick_hists[idx][:step + 1]
+            trajectories[idx].append(eps_map.get(prefix, np.nan))
+
+        print(f"  Step {step+1}/{L}: {len(hists)} branches")
+
+    return trajectories
+
+
+def plot_realities(r, picks, eps_trajectories):
     fig, axes = plt.subplots(len(picks), 3, figsize=(18, 3.2 * len(picks)),
                              gridspec_kw={"width_ratios": [2, 3, 3]})
 
@@ -91,33 +134,23 @@ def plot_realities(r, picks):
                 transform=ax.transData)
         ax.set_xlim(0, L + 3.5)
 
-        # Column 2: running frequency
+        # Column 2: epsilon trajectory
         ax = axes[row, 1]
-        cumulative_n1 = np.cumsum(history)
         steps = np.arange(1, L + 1)
-        running_freq = cumulative_n1 / steps
-        ax.plot(steps, running_freq, "o-", color="firebrick", lw=2, ms=5)
-        ax.axhline(r.p1, color="crimson", ls="--", lw=2, alpha=0.6, label=f"Born p₁={r.p1:.3f}")
-        ax.axhline(0.5, color="seagreen", ls=":", lw=2, alpha=0.6, label="0.5")
+        eps_traj = eps_trajectories[idx]
+        ax.plot(steps, eps_traj, "o-", color="firebrick", lw=2, ms=5)
+        ax.axhline(0.3, color="gray", ls="--", lw=1.5, alpha=0.5)
         ax.set_xlim(0.5, L + 0.5)
-        ax.set_ylim(-0.05, 1.05)
+        ax.set_ylim(-0.03, 1.05)
         ax.set_xlabel("Step k")
-        ax.set_ylabel("Running freq n₁(k)/k")
-        ax.set_title("Running frequency", fontsize=12)
-        if row == 0:
-            ax.legend(fontsize=10, loc="upper right")
+        ax.set_ylabel(r"$\varepsilon(k)$")
+        ax.set_title("Decoherence trajectory", fontsize=12)
 
         # Column 3: weight evolution along this path
         ax = axes[row, 2]
-        # Reconstruct intermediate weights by replaying the branch
-        intermediate_norms = []
-        state = r.branch_states[idx]  # final state
-        # We need to reconstruct from scratch — replay the path
-        # (we'll do this below in a helper)
-        p = IsingDirectParams(m=M, L=L, hamming_threshold=THR,
-                              dt=DT, seed=SEED)
         from recohere.ising_direct import build_ising_setup
-        psi0, U, mask_1 = build_ising_setup(p)
+        psi0, U, mask_1 = build_ising_setup(
+            IsingDirectParams(m=M, L=L, hamming_threshold=THR, dt=DT, seed=SEED))
 
         state = psi0.copy()
         step_weights = [np.vdot(state, state).real]
@@ -159,6 +192,9 @@ if __name__ == "__main__":
         print(f"  {label.replace(chr(10), ' ')}: "
               f"{''.join(str(x) for x in h)}  n1={r.n1[idx]}  eps={r.epsilon[idx]:.3f}")
 
+    print("\nComputing epsilon trajectories...")
+    eps_traj = compute_epsilon_trajectories(r, picks)
+
     print("\nGenerating plot...")
-    plot_realities(r, picks)
+    plot_realities(r, picks, eps_traj)
     print(f"Saved to {OUT}/")
