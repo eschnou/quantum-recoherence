@@ -46,13 +46,14 @@ A non-scrambling control---replacing the Ising
 Hamiltonian with independent single-qubit rotations at matched $p_1$---produces
 no stable filtering, demonstrating that projector asymmetry alone is insufficient
 and that scrambling dynamics are a necessary ingredient.
-We verify that the effect is robust: it appears across system sizes from
-$D = 128$ to $D = 1024$, persists under different coarse-graining projectors
-(including a spatially biased projector structurally unlike Hamming weight), and
-is insensitive to the choice of decoherence threshold.
-The filtering strength is governed primarily by the projector asymmetry
-$|p_1 - 1/2|$, with larger Hilbert spaces amplifying the effect at fixed
-asymmetry.
+We further show that the filtering operates simultaneously at multiple
+\emph{spatial} scales: splitting 8~qubits into two groups and applying
+independent projectors to each yields Born filtering at both the
+single-group level ($p_1 = 0.69$, $2\times$ gap) and the coarser
+``at least one group active'' level ($p_1 = 0.90$, $9\times$ gap), with the
+coarser observer perceiving their Born probability as fundamental.
+The effect is robust across system sizes ($D = 128$ to $1024$), coarse-graining
+projectors, and decoherence thresholds.
 \end{abstract}
 
 \maketitle
@@ -496,6 +497,66 @@ orders of magnitude.
 
 
 % ============================================================================
+\section{Multi-Scale Born Filtering}
+\label{sec:multiscale}
+% ============================================================================
+
+We now ask whether the filtering operates simultaneously at multiple spatial
+scales of coarse-graining on the same Hilbert space.
+
+We split 8~qubits ($D = 256$) into two groups of 4 (left: qubits 0--3, right:
+4--7) and apply independent Hamming-weight projectors ($\text{HW} \geq 2$) to
+each group at every time step.  The four joint outcomes $(00, 01, 10, 11)$
+partition $\mathcal{H}$ into orthogonal subspaces.  From these we construct two
+scales of binary projectors:
+\begin{itemize}
+  \item \textbf{Scale~1}: each group independently
+    ($p_1 = 11/16 = 0.688$),
+  \item \textbf{Scale~2}: ``at least one group shows 1,'' i.e.\
+    $\Pi_2 = I - \Pi_{0,L} \otimes \Pi_{0,R}$
+    ($p_1 = 231/256 = 0.902$).
+\end{itemize}
+Both are proper orthogonal projectors; the scale-2 Born probability is
+determined by rank$(\Pi_2) = 231$, independently of whether the observer knows
+the spatial decomposition.
+
+Figure~\ref{fig:spatial-overlay} shows the frequency-class $\varepsilon$ at
+both scales.  Each curve dips near its respective Born frequency
+($p_1 = 0.69$ at scale~1, $p_1 = 0.90$ at scale~2), with the
+larger projector asymmetry at scale~2 producing a stronger gap
+($9\times$ vs.\ $2\times$ at $L = 20$).
+Figure~\ref{fig:spatial-emergence} confirms that the dip develops
+progressively with $L$ at both scales.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../results/spatial_overlay.png}
+  \caption{$\varepsilon(n/L)$ at two spatial scales on an 8-qubit Ising chain
+    ($D = 256$, $L = 20$, 10 Haar-random seeds).  Scale~1 curves (red, orange)
+    dip near $p_1 = 0.69$; scale~2 (blue) dips near $p_1 = 0.90$.
+    Shading: $\pm 1\sigma$.}
+  \label{fig:spatial-overlay}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{../results/spatial_emergence.png}
+  \caption{Emergence of the filtering dip at two spatial scales as $L$ grows.
+    Top: scale~1 (left group, $p_1 = 0.69$).
+    Bottom: scale~2 (either group, $p_1 = 0.90$).
+    Averaged over 5 seeds.}
+  \label{fig:spatial-emergence}
+\end{figure*}
+
+The scale-2 observer perceives $p_1 = 231/256$ as a fundamental property of
+their projector.  The factorization into spatial subgroups---$p_2 = 1 -
+(1 - p_{1,L})(1 - p_{1,R})$---is invisible at the coarser scale, just as
+molecular-scale Born probabilities do not reveal the underlying atomic
+projectors.
+
+
+
+% ============================================================================
 \section{Limitations}
 \label{sec:limitations}
 % ============================================================================
@@ -543,6 +604,14 @@ This work has clear limitations.
     environment. Our system has no environment---the 9 qubits are the whole
     universe. This is intentional (it matches Strasberg's formalism, where the
     system itself is the recorder), but it is a simplification.
+
+  \item \textbf{Multi-scale analysis limited to two spatial levels.} We test
+    one spatial coarse-graining step (two 4-qubit groups $\to$ one joint
+    projector) on 8~qubits ($D = 256$).  The argument predicts that deeper
+    hierarchies (e.g., groups of groups) should also show Born filtering, but
+    verifying this requires larger systems.  The 8-qubit system is smaller than
+    the 9-qubit system used for the single-scale analysis, limiting the
+    filtering strength at scale~1.
 \end{itemize}
 
 
@@ -567,6 +636,15 @@ At the individual-branch level, the finite Hilbert space preferentially preserve
 Born-typical branches while anti-Born branches lose approximate decoherence.
 This is consistent with Strasberg's analytical results and extends the qualitative
 picture from random matrices to a local, physically motivated Hamiltonian.
+
+The multi-scale analysis reveals that Born filtering operates simultaneously
+at multiple spatial scales.  When 8~qubits are split into two groups with
+independent Hamming-weight projectors, the single-group level ($p_1 = 0.69$)
+and the coarser ``at least one group active'' level ($p_1 = 0.90$) each show
+Born filtering independently, with the larger projector asymmetry at the coarser
+level producing stronger filtering ($9\times$ vs $2\times$ gap).  The coarser
+Born probability derives from the group-level projector ranks, but this
+decomposition is invisible to the coarser observer.
 
 A natural next step is to test the filtering mechanism in a lattice gauge theory,
 where the factored Hilbert space and local gauge constraints are physically
