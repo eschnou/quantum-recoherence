@@ -7,6 +7,7 @@
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{bm}
+\usepackage{placeins}
 
 \usepackage{draftwatermark}
 \SetWatermarkText{DRAFT -- \today}
@@ -496,6 +497,7 @@ orders of magnitude.
 \end{figure*}
 
 
+\FloatBarrier
 % ============================================================================
 \section{Multi-Scale Born Filtering}
 \label{sec:multiscale}
@@ -554,8 +556,57 @@ their projector.  The factorization into spatial subgroups---$p_2 = 1 -
 molecular-scale Born probabilities do not reveal the underlying atomic
 projectors.
 
+\subsection{Emergent Decoherence}
+\label{sec:emergent-decoherence}
+
+The two scales have different branching rates.  The fine-grained (scale-1)
+description has four outcomes per step, producing $4^L$ branches; the
+coarse-grained (scale-2) description has two, producing $2^L$.  Both compete
+for the same $D = 256$ dimensions, but the finer description exhausts them
+faster.
+
+We track two nesting metrics across $L$ (averaged over 5--20 seeds,
+$\varepsilon < 0.3$):
+
+\smallskip
+\noindent
+\begin{tabular}{rrrrccc}
+  \toprule
+  $L$ & $4^L$ & S1 & S2 & Contain.\ & Emerg.\ & Leak \\
+  \midrule
+  4 &     256 &  42 &  8 & 98\% &  45\% & 4\% \\
+  5 &   1\,024 &  25 & 10 & 98\% &  57\% & 1\% \\
+  6 &   4\,096 &   6 & 10 & 98\% &  74\% & 0\% \\
+  7 &  16\,384 & $<\!1$ & 11 & 100\% &  95\% & 0\% \\
+  8 &  65\,536 &   0 & 11 &  --- & 100\% & 0\% \\
+  \bottomrule
+\end{tabular}
+\smallskip
+
+\noindent S1/S2: mean decoherent branches. \emph{Containment}: fraction of
+scale-1 survivors inside a surviving scale-2 branch.
+\emph{Emergence}: fraction of scale-2 survivors with \emph{all}
+scale-1 constituents dead. \emph{Leak}: fraction of dead scale-2
+branches containing any scale-1 survivor.
+
+Containment is near-perfect; leakage is near-zero.  Decoherence flows from
+fine to coarse, never the reverse.
+
+The emergence column is the main result.  By $L = 8$, scale~1 is
+entirely dead: zero out of $65\,536$ branches satisfy $\varepsilon < 0.3$.
+Yet $\sim\!10$ scale-2 branches remain decoherent---each a coherent
+sum of individually dead scale-1 branches.  The coarse-grained world
+supports Born-typical frequencies even though none of its microscopic
+constituents retain a separate identity.
+
+The mechanism is dimensional: four outcomes per step produce $4^L$ branches,
+oversubscribing $D = 256$ by $256\times$ at $L = 8$; two outcomes per step
+produce $2^L$, reaching only $1\times$.  The coarser observer creates fewer
+branches and survives longer---not despite seeing less, but because of it.
 
 
+
+\FloatBarrier
 % ============================================================================
 \section{Limitations}
 \label{sec:limitations}
