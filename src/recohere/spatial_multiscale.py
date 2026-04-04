@@ -2,13 +2,12 @@
 
 Split 8 qubits into two groups of 4 (left: 0-3, right: 4-7).
 At each step, apply independent Hamming-weight projectors to each group.
-This gives three nested scales of proper orthogonal projectors:
+This gives nested scales of proper orthogonal projectors:
 
-  Scale 1a: left group HW >= threshold  (p1 = d1_left / D)
-  Scale 1b: right group HW >= threshold (p1 = d1_right / D)
-  Scale 2:  both groups >= threshold    (p1 = d1_left * d1_right / D^2... but also = d_both / D)
+  Scale 1a/1b: each group independently (HW >= threshold)
+  Scale 2:     "at least one group fires" (OR projector)
 
-All three are genuine projector decompositions of the same Hilbert space.
+All are genuine projector decompositions of the same Hilbert space.
 Born filtering operates independently at each level.
 """
 
@@ -26,7 +25,7 @@ from recohere.ising_direct import IsingDirectParams, build_ising_setup
 class SpatialParams:
     m_left: int = 4
     m_right: int = 4
-    hamming_threshold: int = 3  # HW >= threshold on each group
+    hamming_threshold: int = 2  # HW >= threshold on each group
     L: int = 15
     J: float = 1.0
     hx: float = 0.9045
@@ -116,7 +115,6 @@ class SpatialMultiscaleResult:
 
     scale1_left: CoherenceResult
     scale1_right: CoherenceResult
-    scale2_both: CoherenceResult    # AND: both groups fire
     scale2_either: CoherenceResult  # OR: at least one group fires
     params: SpatialParams
 
@@ -205,7 +203,6 @@ def simulate_spatial_multiscale(params: SpatialParams) -> SpatialMultiscaleResul
     return SpatialMultiscaleResult(
         scale1_left=to_result(aggregate(current, L, 0), L * params.p1_left),
         scale1_right=to_result(aggregate(current, L, 1), L * params.p1_right),
-        scale2_both=to_result(aggregate(current, L, 2), L * params.p1_both),
         scale2_either=to_result(aggregate_either(current, L), L * params.p1_either),
         params=params,
     )

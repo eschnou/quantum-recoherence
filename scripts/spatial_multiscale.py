@@ -2,13 +2,13 @@
 """Spatial multi-scale Born filtering.
 
 8 qubits split into two groups of 4. At each step, independent Hamming-weight
-projectors on each group give a 4-outcome measurement (00, 01, 10, 11).
+projectors (HW >= 2) on each group give a 4-outcome measurement (00, 01, 10, 11).
 
-Three nested scales of proper orthogonal projectors:
-  Scale 1a/1b: each group independently (p1 = 5/16 = 0.3125)
-  Scale 2: both groups (p1 = 25/256 = 0.0977)
+Two nested scales of proper orthogonal projectors:
+  Scale 1a/1b: each group independently (p1 = 11/16 = 0.688)
+  Scale 2: at least one group fires (p1 = 231/256 = 0.902)
 
-Born filtering operates at all levels simultaneously.
+Born filtering operates at both levels simultaneously.
 """
 
 import matplotlib

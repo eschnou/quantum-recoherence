@@ -19,6 +19,7 @@ SCRIPTS = [
     "scripts/scaling.py",
     "scripts/projectors.py",
     "scripts/robustness.py",
+    "scripts/nesting_table.py",
 ]
 
 if __name__ == "__main__":
